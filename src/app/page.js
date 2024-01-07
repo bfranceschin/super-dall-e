@@ -1,6 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react';
 
+const loadingImageUrl = 'https://www.istockphoto.com/br/v%C3%ADdeo/anima%C3%A7%C3%A3o-do-%C3%ADcone-do-c%C3%ADrculo-de-carregamento-em-fundo-branco-pr%C3%A9-carregador-loopable-gm1302436594-394176682'
+const errorImage = 'https://thumbs.dreamstime.com/z/error-rubber-stamp-word-error-inside-illustration-109026446.jpg?ct=jpeg'
+
 export default function Home() {
     const [data, setData] = useState({ imageUrl: '', text: '' });
     const [loading, setLoading] = useState(true);
@@ -12,7 +15,6 @@ export default function Home() {
         setLoading(true);
         const response = await fetch('/api');
         const result = await response.json();
-        console.log(result)
         setData(result.data);
         setLoading(false);
       } catch (err) {
@@ -32,13 +34,23 @@ export default function Home() {
         fetchData();
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading data</p>;
+    let imageUrl
+    let text
+    if (loading) {
+      imageUrl = loadingImageUrl;
+      text = 'Loading...'
+    } else if (error) {
+      imageUrl = errorImage
+      text = 'Error!'
+    } else {
+      imageUrl = data.imageUrl
+      text = data.text
+    }
 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-          <img src={data.imageUrl} alt="Generated Image" className="max-w-sm rounded-lg shadow-lg" />
-          <p className="mt-5 text-lg text-gray-700">{data.text}</p>
+          <img src={imageUrl} alt="Generated Image" className="max-w-sm rounded-lg shadow-lg" />
+          <p className="mt-5 text-lg text-gray-700">{text}</p>
           <button
             onClick={handleRegenerateClick}
             className="mt-5 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
