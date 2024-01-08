@@ -40,7 +40,7 @@ export default function Home() {
     // Function to fetch data from the API
     const fetchData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         const response = await fetch('/api');
         const result = await response.json();
         setData(result.data);
@@ -53,7 +53,8 @@ export default function Home() {
 
     useEffect(() => {
       fetchData();
-      const intervalId = setInterval(fetchData, 300000); // Fetch new data every 5 minutes
+      // const intervalId = setInterval(fetchData, 300000); // Fetch new data every 5 minutes
+      const intervalId = setInterval(fetchData, 30000); // Fetch new data every 30 seconds
       return () => clearInterval(intervalId);
     }, []);
 
@@ -67,7 +68,7 @@ export default function Home() {
       imageUrl = errorImage
       text = 'Error!'
     } else {
-      imageUrl = data.imageUrl
+      imageUrl = data.imageUrl !== 'loading' ? data.imageUrl : loadingImageUrl;
       text = data.text
       parameters = data.parameters
     }
