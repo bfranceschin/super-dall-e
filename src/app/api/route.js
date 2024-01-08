@@ -1,16 +1,22 @@
 
-import { ClientOptions, OpenAI } from "openai";
+import { OpenAI } from "openai";
+import { getRandomParameters, generateDallEPrompt} from '@/utils/prompt'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-const prompt = 'saquarema'
 export async function GET() {
+  // console.log("-----------------------------------------")
+
+  const selectedParameters = getRandomParameters()
+  console.log(selectedParameters)
+
+  const prompt = await generateDallEPrompt(selectedParameters)
+  // console.log(prompt)
+
   const res = await await openai.images.generate({
     model: "dall-e-2",
-    // model: "dall-e-3",
-    // prompt: "a white siamese cat",
     prompt: prompt,
     n: 1,
     size: "1024x1024",
@@ -20,9 +26,9 @@ export async function GET() {
   const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   const result = {
-    // imageUrl: 'https://litoralguia.com.br/wordpress/wp-content/files/litoralguia.com.br/2021/12/imagem1.png',
     imageUrl: res.data[0].url,
-    text: now + ' ' + prompt
+    text: now + ' ' + prompt,
+    parameters: selectedParameters,
   };
   // Directly return the result as a JSON response
   return new Response(JSON.stringify({ data: result }), {
