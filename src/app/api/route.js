@@ -35,7 +35,8 @@ const refreshPeriod = 300000; // 5 minutes in milliseconds
 let lastGeneratedTime = 0;
 let lastResponse = null;
 
-export async function GET() {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
   const currentTime = Date.now();
   if (lastGeneratedTime === 0 || (currentTime - lastGeneratedTime) > refreshPeriod) {
     // Regenerate the result
