@@ -58,11 +58,6 @@ export default function Home() {
       return () => clearInterval(intervalId);
     }, []);
 
-    // Button click handler to manually trigger data refresh
-    const handleRegenerateClick = () => {
-        fetchData();
-    };
-
     let imageUrl
     let text
     let parameters = {}
@@ -84,12 +79,6 @@ export default function Home() {
           <img src={imageUrl} alt="Generated Image" className="w-96 h-96 md:w-[28rem] md:h-[28rem] rounded-lg shadow-lg" />
           <p className="mt-5 text-lg text-gray-700">{text}</p>
           <ParametersTable parameters={parameters} />
-          <button
-            onClick={handleRegenerateClick}
-            className="mt-5 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-          >
-            Regenerate
-          </button>
       </div>
     );
 }
