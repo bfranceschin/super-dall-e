@@ -6,6 +6,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
+const refreshPeriod = 300000; // 5 minutes in milliseconds
+let lastGeneratedTime = 0;
+let lastResponse = null;
+let imageUrl = null;
+
 async function generateResult () {
   const selectedParameters = getRandomParameters()
   console.log(selectedParameters)
@@ -13,27 +18,27 @@ async function generateResult () {
   const prompt = await generateDallEPrompt(selectedParameters)
   // console.log(prompt)
 
-  const res = await await openai.images.generate({
+  imageUrl = null;
+  openai.images.generate({
     model: "dall-e-2",
     prompt: prompt,
     n: 1,
     size: "1024x1024",
-  });
+  }).then((res) => {
+      imageUrl = res.data[0].url;
+    });
   // console.log(res)
 
   const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   const result = {
-    imageUrl: res.data[0].url,
+    // imageUrl: res.data[0].url,
+    imageUrl: "loading",
     text: now + ' ' + prompt,
     parameters: selectedParameters,
   };
   return result
 }
-
-const refreshPeriod = 300000; // 5 minutes in milliseconds
-let lastGeneratedTime = 0;
-let lastResponse = null;
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
@@ -44,7 +49,10 @@ export async function GET(request) {
     // Update lastGeneratedTime and lastResponse
     lastGeneratedTime = currentTime;
   }
-  const result = await lastResponse;
+  let result = await lastResponse;
+  if (imageUrl) {
+    result.imageUrl = imageUrl;
+  }
   return new Response(JSON.stringify({ data: result }), {
     headers: { 'Content-Type': 'application/json' },
   });
