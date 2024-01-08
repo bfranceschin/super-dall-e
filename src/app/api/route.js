@@ -6,9 +6,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-export async function GET() {
-  // console.log("-----------------------------------------")
-
+async function generateResult () {
   const selectedParameters = getRandomParameters()
   console.log(selectedParameters)
 
@@ -30,7 +28,22 @@ export async function GET() {
     text: now + ' ' + prompt,
     parameters: selectedParameters,
   };
-  // Directly return the result as a JSON response
+  return result
+}
+
+const refreshPeriod = 300000; // 5 minutes in milliseconds
+let lastGeneratedTime = 0;
+let lastResponse = null;
+
+export async function GET() {
+  const currentTime = Date.now();
+  if (lastGeneratedTime === 0 || (currentTime - lastGeneratedTime) > refreshPeriod) {
+    // Regenerate the result
+    lastResponse = generateResult();
+    // Update lastGeneratedTime and lastResponse
+    lastGeneratedTime = currentTime;
+  }
+  const result = await lastResponse;
   return new Response(JSON.stringify({ data: result }), {
     headers: { 'Content-Type': 'application/json' },
   });
