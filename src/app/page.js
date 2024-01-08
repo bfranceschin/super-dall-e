@@ -5,6 +5,34 @@ import { useState, useEffect } from 'react';
 const loadingImageUrl = 'https://as1.ftcdn.net/v2/jpg/02/22/75/60/1000_F_222756095_dxtA68MXpsnN5WE5UeeHEFDChCSfdWq7.jpg'
 const errorImage = 'https://thumbs.dreamstime.com/z/error-rubber-stamp-word-error-inside-illustration-109026446.jpg?ct=jpeg'
 
+function ParametersTable({ parameters }) {
+  return (
+    <div className="mt-5 overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Parameter Name
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Title
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {Object.entries(parameters).map(([parameterName, parameterData]) => (
+            <tr key={parameterName}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{parameterName}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{parameterData.title}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
 export default function Home() {
     const [data, setData] = useState({ imageUrl: '', text: '' });
     const [loading, setLoading] = useState(true);
@@ -37,6 +65,7 @@ export default function Home() {
 
     let imageUrl
     let text
+    let parameters = {}
     if (loading) {
       imageUrl = loadingImageUrl;
       text = 'Loading...'
@@ -46,6 +75,7 @@ export default function Home() {
     } else {
       imageUrl = data.imageUrl
       text = data.text
+      parameters = data.parameters
     }
 
     return (
@@ -53,6 +83,7 @@ export default function Home() {
           {/* <img src={imageUrl} alt="Generated Image" className="max-w-sm rounded-lg shadow-lg" /> */}
           <img src={imageUrl} alt="Generated Image" className="w-96 h-96 md:w-[28rem] md:h-[28rem] rounded-lg shadow-lg" />
           <p className="mt-5 text-lg text-gray-700">{text}</p>
+          <ParametersTable parameters={parameters} />
           <button
             onClick={handleRegenerateClick}
             className="mt-5 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
