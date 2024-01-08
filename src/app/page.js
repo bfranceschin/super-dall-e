@@ -32,7 +32,6 @@ function ParametersTable({ parameters }) {
   );
 }
 
-
 export default function Home() {
     const [data, setData] = useState({ imageUrl: '', text: '' });
     const [loading, setLoading] = useState(true);
