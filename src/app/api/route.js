@@ -6,7 +6,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-const refreshPeriod = 300000; // 5 minutes in milliseconds
+// const refreshPeriod = 300000; // 5 minutes in milliseconds
+const refreshPeriod = 21600000; // 6 hours in milliseconds
 let lastGeneratedTime = 0;
 let lastResponse = null;
 let imageUrl = null;
